@@ -10,7 +10,7 @@
 - Datasets
     
     
-    Datasets divided on White Background, White Background Cropped and WHite Background Cut
+    Datasets divided on White Background, White Background Cropped and White Background Cut
     White Background: All the images of a snack with a white background
     White Background Cropped: Balanced dataset of 400 image each(This dataset was used for the data on the ppt)
     White Background Cut: No picture has a cut in between to avoid having to deal with the difference of cut food and non-cut food
