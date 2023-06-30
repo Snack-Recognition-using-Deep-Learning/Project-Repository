@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Upload Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            background-image: url("/static/Background.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 100px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #333;
+            text-align: center;
+        }
+
+        .row {
+            margin-top: 50px;
+        }
+
+        .col-md-6 {
+            padding: 10px;
+        }
+
+        h4 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
+            margin-top: 20px;
+        }
+
+        #correct-form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title-en">Image Upload Result</h1>
+        <h1 id="title-es" style="display: none;">Resultado de Subida de Imagen</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4 id="predicted-en">Predicted Class: {{ predicted_class }}</h4>
+                <h4 id="predicted-es" style="display: none;">Clase Predicha: {{ predicted_class }}</h4>
+                <h4 id="confidence-en">Confidence: {{ score }}</h4>
+                <h4 id="confidence-es" style="display: none;">Confianza: {{ score }}</h4>
+                <img src="{{ image_url }}" alt="Uploaded Image" class="img-fluid">
+            </div>          
+            <div class="col-md-6">
+                <h4 id="description-en">Description: {{ description_en }}</h4>
+                <h4 id="description-es" style="display: none;">Descripción: {{ description_es }}</h4>
+                <h4 id="correct-en">Was the prediction correct?</h4>
+                <h4 id="correct-es" style="display: none;">¿La predicción fue correcta?</h4>
+                <a id="correct-btn-en" href="{{ url_for('index') }}" class="btn btn-primary">Yes</a>
+                <a id="correct-btn-es" href="{{ url_for('index') }}" class="btn btn-primary" style="display: none;">Sí</a>
+                <button id="incorrect-btn-en" onclick="showForm()" class="btn btn-danger">No</button>
+                <button id="incorrect-btn-es" onclick="showForm()" class="btn btn-danger" style="display: none;">No</button>
+                <div id="correct-form" style="display: none;">
+                    <h4 id="correct-label-en">Correct Label:</h4>
+                    <h4 id="correct-label-es" style="display: none;">Etiqueta Correcta:</h4>
+                    <form action="{{ url_for('correct') }}" method="post">
+                        <input type="hidden" id="image_url" name="image_url" value="{{ image_url }}">
+                        <select name="correct_label" class="form-select" onchange="this.form.submit()">
+                            <option value="">Select...</option>
+                            {% for label in labels %}
+                                <option value="{{ label }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>            
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn btn-secondary" id="go-index-en">Go to Index</a>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary" id="go-index-es" style="display: none;">Ir a Índice</a>
+        
+        <div class="mt-3">
+            <button onclick="changeLanguage('en')" class="btn btn-secondary">English</button>
+            <button onclick="changeLanguage('es')" class="btn btn-secondary">Español</button>
+        </div>
+    </div>
+
+    <script>
+        function changeLanguage(language) {
+            var titleEn = document.getElementById('title-en');
+            var titleEs = document.getElementById('title-es');
+            var predictedEn = document.getElementById('predicted-en');
+            var predictedEs = document.getElementById('predicted-es');
+            var confidenceEn = document.getElementById('confidence-en');
+            var confidenceEs = document.getElementById('confidence-es');
+            var correctEn = document.getElementById('correct-en');
+            var correctEs = document.getElementById('correct-es');
+            var correctBtnEn = document.getElementById('correct-btn-en');
+            var correctBtnEs = document.getElementById('correct-btn-es');
+            var incorrectBtnEn = document.getElementById('incorrect-btn-en');
+            var incorrectBtnEs = document.getElementById('incorrect-btn-es');
+            var correctLabelEn = document.getElementById('correct-label-en');
+            var correctLabelEs = document.getElementById('correct-label-es');
+            var goIndexEn = document.getElementById('go-index-en');
+            var goIndexEs = document.getElementById('go-index-es');
+            var descriptionEn = document.getElementById('description-en');
+            var descriptionEs = document.getElementById('description-es');
+            var bboxEn = document.getElementById('bbox-en');
+            var bboxEs = document.getElementById('bbox-es');
+            if (language === 'en') {
+                titleEn.style.display = 'block';
+                titleEs.style.display = 'none';
+                predictedEn.style.display = 'block';
+                predictedEs.style.display = 'none';
+                confidenceEn.style.display = 'block';
+                confidenceEs.style.display = 'none';
+                correctEn.style.display = 'block';
+                correctEs.style.display = 'none';
+                correctBtnEn.style.display = 'inline-block';
+                correctBtnEs.style.display = 'none';
+                incorrectBtnEn.style.display = 'inline-block';
+                incorrectBtnEs.style.display = 'none';
+                correctLabelEn.style.display = 'block';
+                correctLabelEs.style.display = 'none';
+                goIndexEn.style.display = 'inline-block';
+                goIndexEs.style.display = 'none';
+                descriptionEn.style.display = 'block';
+                descriptionEs.style.display = 'none';
+                bboxEn.style.display = 'block';
+                bboxEs.style.display = 'none';
+            } else if (language === 'es') {
+                titleEn.style.display = 'none';
+                titleEs.style.display = 'block';
+                predictedEn.style.display = 'none';
+                predictedEs.style.display = 'block';
+                confidenceEn.style.display = 'none';
+                confidenceEs.style.display = 'block';
+                correctEn.style.display = 'none';
+                correctEs.style.display = 'block';
+                correctBtnEn.style.display = 'none';
+                correctBtnEs.style.display = 'inline-block';
+                incorrectBtnEn.style.display = 'none';
+                incorrectBtnEs.style.display = 'inline-block';
+                correctLabelEn.style.display = 'none';
+                correctLabelEs.style.display = 'block';
+                goIndexEn.style.display = 'none';
+                goIndexEs.style.display = 'inline-block';
+                descriptionEn.style.display = 'none';
+                descriptionEs.style.display = 'block';
+                bboxEn.style.display = 'none';
+                bboxEs.style.display = 'block';
+            }
+        }
+    
+        function showForm() {
+            document.getElementById("correct-form").style.display = "block";
+        }
+    
+        function hideForm() {
+            document.getElementById("correct-form").style.display = "none";
+        }
+    </script>
+</body>
+</html>
