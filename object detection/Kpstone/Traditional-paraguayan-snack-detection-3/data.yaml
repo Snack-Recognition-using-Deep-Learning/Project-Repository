@@ -1,0 +1,17 @@
+names:
+- Chipa
+- Chipa_Guazu
+- Mbeju
+- Pajagua
+- Pastel_Mandio
+- Sopa
+nc: 6
+roboflow:
+  license: CC BY 4.0
+  project: traditional-paraguayan-snack-detection
+  url: https://universe.roboflow.com/ntust-lu0wl/traditional-paraguayan-snack-detection/dataset/3
+  version: 3
+  workspace: ntust-lu0wl
+test: test/images
+train: train/images
+val: valid/images
